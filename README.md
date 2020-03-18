@@ -13,23 +13,20 @@ pip install git+git://github.com/joemrt/fisheradversarial.git
 
 ## Usage
 
-*Note* The method is currently designed for inputs `x` of batch size 1. That is, it is assumed that `x.shape[0] == 1`.
+**Note**: The method is currently designed for inputs `x` of batch size 1. That is, it is assumed that `x.shape[0] == 1`.
 
-The main file of this package is the module `fisherfom`:
+The main file of this package is the module `fisherform`:
 ```
 import torch
 import torch.nn as nn
 import fisherform
 ```
-There is also a module `fishertrace` contained in the package that implements adversarial detection based on the trace of the Fisher matrix, as explained in [1].
-
-For a (trained) pytorch model `net` with log-softmax output and an input `x` with batch size 1, first compute a corresponding direction `v`. To check that the software works you might simply pick some random objects:
+There is also a module `fishertrace` contained in the package that implements adversarial detection based on the trace of the Fisher information matrix, as explained in [1]. To check that the software works you might want to pick some random objects:
 ```
 net = nn.Sequential(nn.Linear(10,5),nn.Tanh(),nn.Linear(5,3), nn.Softmax(dim=1))
 x = torch.randn((1,10))
 ```
-
-For instance, as explained in [1], you might take tha gradient with respect to the maximum of the output, that is
+For a (trained) pytorch model `net` with log-softmax output and an input `x` with batch size 1, first compute a corresponding direction `v`. For instance, as explained in [1], you can take the gradient of the maximal output node, that is
 ```
 net.zero_grad()
 out = net(x).max()
@@ -38,9 +35,9 @@ v = []
 for par in net.parameters():
     v.append(par.grad.clone())
 ```
-Computing the fisher from from [1] for adversarial detection can then be achieved via
+Computing the fisher form from [1] for adversarial detection can then be achieved via
 ```
-fisherform.numeric_fisher_form(x,net,v)
+fisherform.numeric_fisher_form(x, net, v)
 ```
 This 0 dimensional tensor measures how *unusual* the input is, compared to the learned parameters of `net`. If you are using a trained network, and not a random one as above, this number will go up once you feed adversarial inputs `x`. 
 
