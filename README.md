@@ -23,7 +23,7 @@ import fisherform
 ```
 There is also a module `fishertrace` contained in the package that implements adversarial detection based on the trace of the Fisher information matrix, as explained in [1]. To check that the software works you might want to pick some random objects:
 ```
-net = nn.Sequential(nn.Linear(10,5),nn.Tanh(),nn.Linear(5,3), nn.Softmax(dim=1))
+net = nn.Sequential(nn.Linear(10,5),nn.Tanh(),nn.Linear(5,3), nn.LogSoftmax(dim=1))
 x = torch.randn((1,10))
 ```
 For a (trained) pytorch model `net` with log-softmax output and an input `x` with batch size 1, first compute a corresponding direction `v`. For instance, as explained in [1], you can take the gradient of the maximal output node, that is
